@@ -29,7 +29,7 @@ class Notes:
         }
         notes.append(new_note)
         self._save_notes(notes)
-        self._sort_notes_id()
+        self._sort_notes_date()
         print('\033[1;32m[*] -- Запись создана.\033[0m')
 
     def read_note(self, id_note):
@@ -67,7 +67,7 @@ class Notes:
                 note['title'] = input('Введите заголовок: ')
                 note['text'] = input('Введите текст: ')
                 self._save_notes(notes)
-                self._sort_notes_id()
+                self._sort_notes_date()
                 print('\033[1;32m[*] -- Запись отредоктированна.\033[0m')
 
     def delete_note(self, id_note):
@@ -81,7 +81,7 @@ class Notes:
             if note['id'] == id_note:
                 notes.remove(note)
                 self._save_notes(notes)
-                self._sort_notes_id()
+                self._sort_notes_date()
                 print(f'\033[1;32m[*] -- Запись с ID "{id_note}" удалена.\033[0m')
                 return
         print(f'\033[1;31m[*] -- Запись с ID "{id_note}" не существует!\033[0m')
@@ -111,7 +111,7 @@ class Notes:
         except IOError:
             print('\033[1;31m[*] -- Ошибка при сохранении файла!\033[0m')
 
-    def _sort_notes_id(self):
+    def _sort_notes_date(self):
         """
         Sorts notes by their Date.
         """
