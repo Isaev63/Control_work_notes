@@ -121,7 +121,7 @@ class Notes:
         Sorts notes by their Date.
         """
         notes = self._load_notes()
-        sorted_notes = sorted(notes, key=lambda x: x['date'])
+        sorted_notes = sorted(notes, key=lambda x: datetime.strptime(x['date'], '%d-%m-%Y | %H:%M:%S'))
         self._save_notes(sorted_notes)
 
     def _generate_id(self, notes):
