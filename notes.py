@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+import re
 
 
 class Notes:
@@ -12,7 +13,11 @@ class Notes:
         Creates an instance of the Notes class.
         Parameters:
             filename (str): The name of the file to store notes (without extension).
+        Raises:
+            ValueError: If the filename contains invalid characters.
         """
+        if not re.match("^[a-zA-Z0-9_-а-яА-Я]+$", filename):
+            raise ValueError("\033[1;31mИмя файла содержит недопустимые символы!\033[0m")
         self.filename = filename
 
     def create_note(self):
