@@ -20,7 +20,7 @@ class Notes:
             raise ValueError("\033[1;31mИмя файла содержит недопустимые символы!\033[0m")
         self.filename = filename
 
-    def create_note(self):
+    def create_note(self, title=None, text=None):
         """
         Creates a new note and saves it to the file.
         Data input is done through user input from the keyboard.
@@ -29,13 +29,14 @@ class Notes:
         new_note = {
             'id': self._generate_id(notes),
             'date': datetime.now().strftime('%d-%m-%Y | %H:%M:%S'),
-            'title': input('Введите заголовок: '),
-            'text': input('Введите текст: ')
+            'title': title or input('Введите заголовок: '),
+            'text': text or input('Введите текст: ')
         }
         notes.append(new_note)
         self._save_notes(notes)
         self._sort_notes_date()
         print('\033[1;32m[*] -- Запись создана.\033[0m')
+        return new_note
 
     def read_note(self, id_note):
         """
@@ -46,10 +47,9 @@ class Notes:
         notes = self._load_notes()
         for note in notes:
             if note['id'] == id_note:
-                print(f'ID: {note["id"]}\n'
-                      f'Date: {note["date"]}\n'
-                      f'Title: {note["title"]}\n'
-                      f'Text: {note["text"]}')
+                print(self._note_to_str(note))
+                return note
+        return None
 
     def read_all_notes(self):
         """
@@ -59,7 +59,7 @@ class Notes:
         for note in notes:
             print(f'{note["id"]}. {note["title"]} -- [{note["date"]}]')
 
-    def edit_note(self, id_note):
+    def edit_note(self, id_note, new_title=None, new_text=None):
         """
         Edits the note with the specified ID.
         Parameters:
@@ -69,11 +69,13 @@ class Notes:
         for note in notes:
             if note["id"] == id_note:
                 note['date'] = datetime.now().strftime('%d-%m-%Y | %H:%M:%S')
-                note['title'] = input('Введите заголовок: ')
-                note['text'] = input('Введите текст: ')
+                note['title'] = new_title or input('Введите заголовок: ')
+                note['text'] = new_text or input('Введите текст: ')
                 self._save_notes(notes)
                 self._sort_notes_date()
                 print('\033[1;32m[*] -- Запись отредоктированна.\033[0m')
+                return note
+        return None
 
     def delete_note(self, id_note):
         """
@@ -88,8 +90,9 @@ class Notes:
                 self._save_notes(notes)
                 self._sort_notes_date()
                 print(f'\033[1;32m[*] -- Запись с ID "{id_note}" удалена.\033[0m')
-                return
+                return True
         print(f'\033[1;31m[*] -- Запись с ID "{id_note}" не существует!\033[0m')
+        return False
 
     def _load_notes(self):
         """
@@ -133,3 +136,13 @@ class Notes:
             int: New ID for the note.
         """
         return max([note['id'] for note in notes], default=0) + 1
+
+    def _note_to_str(self, note):
+        """
+        Formats a note as a string for displaying.
+        Parameters:
+            note (dict): The note to format.
+        Returns:
+            str: Formatted note as a string.
+        """
+        return f'ID: {note["id"]}\nDate: {note["date"]}\nTitle: {note["title"]}\nText: {note["text"]}'
